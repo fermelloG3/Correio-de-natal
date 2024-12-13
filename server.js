@@ -1,36 +1,23 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
-
 const app = express();
 const PORT = 3000;
 
-// Configurar base de datos SQLite
-const db = new sqlite3.Database('./messages.db', (err) => {
-    if (err) {
-        console.error('Error al conectar con la base de datos:', err.message);
-    } else {
-        console.log('Conectado a la base de datos SQLite');
-    }
-});
+// URL de conexión con MongoDB (reemplaza <db_password> con tu contraseña real)
+const uri = 'mongodb+srv://ferdemello28:ShOqjJaa3dJ9YJxO@cluster0.vbg7j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
-// Crear tabla si no existe
-db.run(
-    `CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        senderHotel TEXT,
-        senderName TEXT,
-        recipientHotel TEXT,
-        recipientName TEXT,
-        customMessage TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`
-);
+// Conectar con MongoDB
+let db;
+MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(client => {
+        db = client.db('myDatabase');  // Asegúrate de poner el nombre correcto de tu base de datos
+        console.log('Conectado a la base de datos MongoDB');
+    })
+    .catch(err => console.error('Error al conectar con la base de datos:', err));
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Endpoint para guardar mensajes
 app.post('/save-message', (req, res) => {
@@ -40,32 +27,34 @@ app.post('/save-message', (req, res) => {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
-    const query = `
-        INSERT INTO messages (senderHotel, senderName, recipientHotel, recipientName, customMessage)
-        VALUES (?, ?, ?, ?, ?)
-    `;
+    const message = {
+        senderHotel,
+        senderName,
+        recipientHotel,
+        recipientName,
+        customMessage,
+        created_at: new Date(),
+    };
 
-    db.run(query, [senderHotel, senderName, recipientHotel, recipientName, customMessage], function (err) {
+    const messagesCollection = db.collection('messages');
+    messagesCollection.insertOne(message, (err, result) => {
         if (err) {
-            console.error('Error al guardar el mensaje:', err.message);
+            console.error('Error al guardar el mensaje:', err);
             return res.status(500).json({ error: 'Error al guardar el mensaje' });
         }
-
-        res.json({ message: 'Mensaje guardado exitosamente', id: this.lastID });
+        res.json({ message: 'Mensaje guardado exitosamente', id: result.insertedId });
     });
 });
 
 // Endpoint para obtener mensajes
 app.get('/messages', (req, res) => {
-    const query = 'SELECT * FROM messages ORDER BY created_at DESC';
-
-    db.all(query, [], (err, rows) => {
+    const messagesCollection = db.collection('messages');
+    messagesCollection.find({}).sort({ created_at: -1 }).toArray((err, messages) => {
         if (err) {
-            console.error('Error al obtener los mensajes:', err.message);
+            console.error('Error al obtener los mensajes:', err);
             return res.status(500).json({ error: 'Error al obtener los mensajes' });
         }
-
-        res.json(rows);
+        res.json(messages);
     });
 });
 
