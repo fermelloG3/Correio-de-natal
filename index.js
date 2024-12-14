@@ -8,8 +8,11 @@ const client = new MongoClient('mongodb://localhost:27017'); // Asegúrate de us
 const PORT = 3000;
 
 // Middleware para permitir CORS
+// Permitir solicitudes solo desde 'https://www.natalhoteispires.com.br'
 app.use(cors({
-  origin: 'https://www.natalhoteispires.com.br' // Ajusta según el dominio de tu frontend
+  origin: 'https://www.natalhoteispires.com.br',  // Especifica el dominio correcto
+  methods: ['GET', 'POST'],  // Permite los métodos que vas a usar
+  allowedHeaders: ['Content-Type'], // Permite el encabezado Content-Type
 }));
 
 // Middleware para parsear JSON
