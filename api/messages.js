@@ -1,27 +1,14 @@
-const { MongoClient } = require('mongodb');
-require('dotenv').config();
+const express = require('express');
+const router = express.Router();
+const { client } = require('../index'); // Importar el cliente MongoDB
 
-async function handler(req, res) {
-  const uri = process.env.MONGO_URI;
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+router.get('/', (req, res) => {
+  const db = client.db('correiodenatal');
+  const messages = db.collection('suporte');
 
-  try {
-    await client.connect();
-    const db = client.db('correiodenatal');
-    const messages = db.collection('suporte');
+  messages.find().toArray()
+    .then(rows => res.json(rows))
+    .catch(err => res.status(500).json({ error: 'Error al obtener los mensajes', details: err.message }));
+});
 
-    if (req.method === 'GET') {
-      const messagesList = await messages.find().toArray();
-      return res.status(200).json(messagesList);
-    } else {
-      return res.status(405).json({ error: 'Método no permitido' });
-    }
-  } catch (err) {
-    console.error('Error al conectar a MongoDB', err);
-    return res.status(500).json({ error: 'Error interno del servidor', details: err.message });
-  } finally {
-    await client.close();
-  }
-}
-
-module.exports = handler;
+module.exports = router;
