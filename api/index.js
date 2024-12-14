@@ -6,12 +6,14 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configura CORS para permitir solicitudes desde el dominio del frontend
-app.use(cors({
-  origin: 'https://natalhoteispires.com.br',  // Cambia a la URL de tu frontend
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Configurar los orígenes permitidos
+const corsOptions = {
+  origin: ['https://natalhoteispires.com.br', 'https://www.natalhoteispires.com.br'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
