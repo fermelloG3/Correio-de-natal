@@ -9,11 +9,14 @@ const PORT = 3000;
 
 // Middleware para permitir CORS
 // Permitir solicitudes solo desde 'https://www.natalhoteispires.com.br'
-app.use(cors({
-  origin: 'https://www.natalhoteispires.com.br',  // Especifica el dominio correcto
-  methods: ['GET', 'POST'],  // Permite los métodos que vas a usar
-  allowedHeaders: ['Content-Type'], // Permite el encabezado Content-Type
-}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // Permite solicitudes desde cualquier origen
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE"); // Métodos permitidos
+  res.header("Access-Control-Allow-Headers", "Content-Type"); // Encabezados permitidos
+  app.use(cors());
+  next(); // Asegura que la solicitud continúe al siguiente middleware o ruta
+});
+
 
 // Middleware para parsear JSON
 app.use(bodyParser.json());
