@@ -6,8 +6,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configura CORS para permitir solicitudes desde el dominio del frontend
 app.use(cors({
-  origin: 'https://correio-de-natal-fermellog3s-projects.vercel.app',  // Reemplaza con tu dominio de frontend
+  origin: 'https://correio-de-natal-1kd2.vercel.app',  // Cambia a la URL de tu frontend
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
