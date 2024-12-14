@@ -338,7 +338,7 @@ function filterMessages() {
     window.onload = loadMessages;
 
     function loadMessages() {
-        fetch('https://natalhoteispires.com.br/api/messages')
+        fetch('https://natalhoteispires.com.br')
             .then(response => response.json())
             .then(messages => {
                 const messageBox = document.getElementById('message-box');
