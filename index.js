@@ -2,7 +2,7 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 const cors = require('cors');
-
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -11,6 +11,10 @@ app.use(express.json());
 
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Servir archivos estáticos del frontend
+const frontendPath = path.join(__dirname, 'public'); // Cambia 'public' por la carpeta de tu frontend
+app.use(express.static(frontendPath));
 
 async function startServer() {
   try {
