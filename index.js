@@ -6,7 +6,12 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://correio-de-natal-fermellog3s-projects.vercel.app',  // Reemplaza con tu dominio de frontend
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 const uri = process.env.MONGO_URI;
