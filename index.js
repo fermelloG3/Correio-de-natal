@@ -4,13 +4,9 @@ console.log(process.env); // Verifica que las variables de entorno estén cargad
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-
 const { MongoClient } = require('mongodb');
 const app = express();
 const PORT = process.env.PORT || 3000; // Usa el puerto definido en .env o 3000 como predeterminado
-
-// Servir archivos estáticos desde la carpeta 'public'
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Configuración de CORS
 const corsOptions = {
@@ -21,6 +17,11 @@ const corsOptions = {
 
 // Aplica CORS a todas las rutas
 app.use(cors(corsOptions));  // Esto habilita CORS para todas las rutas
+
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 // Ruta principal para servir el frontend
 app.get('/', (req, res) => {
