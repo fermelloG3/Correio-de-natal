@@ -11,12 +11,15 @@ const PORT = process.env.PORT || 3000; // Usa el puerto definido en .env o 3000 
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configuración de CORS para permitir solicitudes desde cualquier origen
-app.use(cors({
-  origin: 'https://www.natalhoteispires.com.br',  // Permite solo solicitudes desde este dominio
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type']
-}));
+// Configuración de CORS
+const corsOptions = {
+  origin: '*',  // Permite cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
+  allowedHeaders: ['Content-Type'],  // Encabezados permitidos
+};
+
+// Aplica CORS a todas las rutas
+router.use(cors(corsOptions));  // Esto habilita CORS para todas las rutas en este archivo
 
 // Ruta principal para servir el frontend
 app.get('/', (req, res) => {
