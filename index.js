@@ -14,9 +14,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Configuración de CORS
 const corsOptions = {
-  origin: '*',  // Permite cualquier origen
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
-  allowedHeaders: ['Content-Type'],  // Encabezados permitidos
+  origin: ['https://correio-de-natal.vercel.app', 'http://localhost:3000'],  
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  
+  allowedHeaders: ['Content-Type'],  
 };
 
 // Aplica CORS a todas las rutas
