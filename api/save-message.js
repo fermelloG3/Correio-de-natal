@@ -2,9 +2,6 @@ const allowCors = (fn) => async (req, res) => {
   const allowedOrigins = ['https://correio-de-natal.vercel.app', 'http://localhost:3000']; // Dominios permitidos
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader(
