@@ -4,6 +4,7 @@ console.log(process.env); // Verifica que las variables de entorno estén cargad
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+
 const { MongoClient } = require('mongodb');
 const app = express();
 const PORT = process.env.PORT || 3000; // Usa el puerto definido en .env o 3000 como predeterminado
@@ -11,13 +12,15 @@ const PORT = process.env.PORT || 3000; // Usa el puerto definido en .env o 3000 
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Configurar los encabezados CORS manualmente
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://www.natalhoteispires.com.br'); // Permitir solicitudes desde tu dominio específico
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Métodos permitidos
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Encabezados permitidos
-  next(); // Pasar al siguiente middleware o ruta
-});
+// Configuración de CORS
+const corsOptions = {
+  origin: '*',  // Permite cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Métodos permitidos
+  allowedHeaders: ['Content-Type'],  // Encabezados permitidos
+};
+
+// Aplica CORS a todas las rutas
+app.use(cors(corsOptions));  // Esto habilita CORS para todas las rutas
 
 // Ruta principal para servir el frontend
 app.get('/', (req, res) => {
@@ -31,7 +34,6 @@ if (!process.env.MONGO_URL) {
 }
 
 const client = new MongoClient(process.env.MONGO_URL); // URL de MongoDB desde .env
-
 
 // Middleware para parsear JSON
 app.use(express.json()); // Usamos el middleware de Express directamente
