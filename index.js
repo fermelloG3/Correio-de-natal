@@ -11,8 +11,9 @@ const PORT = process.env.PORT || 3000; // Usa el puerto definido en .env o 3000 
 // Configuración de CORS
 const corsOptions = {
   origin: ['https://correio-de-natal.vercel.app', 'http://localhost:3000'], // Agrega ambos orígenes
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Añadir OPTIONS explícitamente
   allowedHeaders: ['Content-Type'],
+  credentials: true, // Permite el uso de cookies si es necesario
 };
 
 // Aplica CORS a todas las rutas
@@ -20,8 +21,6 @@ app.use(cors(corsOptions));  // Esto habilita CORS para todas las rutas
 
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
-
-
 
 // Ruta principal para servir el frontend
 app.get('/', (req, res) => {
@@ -46,6 +45,9 @@ const saveMessageRoute = require('./api/save-message');
 // Usar las rutas
 app.use('/api/messages', messagesRoute);
 app.use('/api/save-message', saveMessageRoute);
+
+// Middleware para manejar preflight (opcional si no se resuelven los preflight automáticamente)
+app.options('*', cors(corsOptions));  // Esto manejará las peticiones OPTIONS preflight de cualquier ruta
 
 // Manejo de errores global
 app.use((err, req, res, next) => {
