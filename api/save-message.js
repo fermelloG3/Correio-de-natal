@@ -2,6 +2,11 @@ const allowCors = (fn) => async (req, res) => {
   const allowedOrigins = ['https://correio-de-natal.vercel.app', 'http://localhost:3000']; // Dominios permitidos
   const origin = req.headers.origin;
 
+  // Verificar si el origen está en la lista de orígenes permitidos
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);  // Permitimos el origen en el encabezado
+  }
+
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader(
@@ -13,7 +18,8 @@ const allowCors = (fn) => async (req, res) => {
     res.status(200).end(); // Responder directamente a las solicitudes preflight
     return;
   }
-  return await fn(req, res);
+
+  return await fn(req, res); // Continuar con el flujo normal si no es una solicitud OPTIONS
 };
 
 const handler = async (req, res) => {
