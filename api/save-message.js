@@ -1,9 +1,11 @@
 const allowCors = (fn) => async (req, res) => {
-  const allowedOrigins = ['https://correio-de-natal.vercel.app', 'http://localhost:3000']; // Dominios permitidos
+  // Define los orígenes permitidos
+  const allowedOrigins = ['https://correio-de-natal.vercel.app', 'http://localhost:3000'];
+
+  // Asignar el encabezado Access-Control-Allow-Origin a los orígenes permitidos
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigins.join(', '));  // Permite múltiples orígenes
   
-  // Permitir todos los orígenes permitidos en los encabezados
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigins.join(', '));  // Permitimos múltiples orígenes
-  
+  // Otros encabezados CORS que puedes necesitar
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader(
@@ -11,12 +13,14 @@ const allowCors = (fn) => async (req, res) => {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   );
 
+  // Si la solicitud es de tipo OPTIONS (preflight), responder con status 200
   if (req.method === 'OPTIONS') {
-    res.status(200).end(); // Responder directamente a las solicitudes preflight
+    res.status(200).end();
     return;
   }
 
-  return await fn(req, res); // Continuar con el flujo normal si no es una solicitud OPTIONS
+  // Continuar con la función principal si no es OPTIONS
+  return await fn(req, res);
 };
 
 const handler = async (req, res) => {
@@ -48,4 +52,5 @@ const handler = async (req, res) => {
   }
 };
 
+// Exporta el handler con CORS habilitado
 module.exports = allowCors(handler);
