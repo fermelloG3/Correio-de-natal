@@ -280,7 +280,7 @@
 
         if (senderHotel && senderName && recipientHotel && recipientName && customMessage) {
             // Enviar los datos al servidor con fetch
-            fetch('https://correio-de-natal-1kd2-git-master-fermellog3s-projects.vercel.app/api/save-message', {
+            fetch('https://correio-de-natal-1kd2-mssgi1f5v-fermellog3s-projects.vercel.app/api/save-message', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -338,7 +338,7 @@ function filterMessages() {
     window.onload = loadMessages;
 
     function loadMessages() {
-        fetch('https://correio-de-natal-1kd2-git-master-fermellog3s-projects.vercel.app/api/messages')
+        fetch('https://correio-de-natal-1kd2-mssgi1f5v-fermellog3s-projects.vercel.app/api/messages')
             .then(response => response.json())
             .then(messages => {
                 const messageBox = document.getElementById('message-box');
