@@ -338,7 +338,7 @@ function filterMessages() {
     window.onload = loadMessages;
 
     function loadMessages() {
-        fetch('https://natalhoteispires.com.br/messages')
+        fetch('https://correio-de-natal-1kd2-git-master-fermellog3s-projects.vercel.app/api/messages')
             .then(response => response.json())
             .then(messages => {
                 const messageBox = document.getElementById('message-box');
