@@ -280,8 +280,9 @@
 
         if (senderHotel && senderName && recipientHotel && recipientName && customMessage) {
             // Enviar los datos al servidor con fetch
-            fetch('https://natalhoteispires.com.br/save-message', {
+            fetch('https://natalhoteispires.com.br/api/save-message',  {
                 method: 'POST',
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json'
                 },
