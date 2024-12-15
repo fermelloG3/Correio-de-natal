@@ -1,25 +1,39 @@
+require('dotenv').config(); // Carga variables de entorno desde el archivo .env
+console.log(process.env); // Verifica que las variables de entorno estén cargadas
+
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
-const MongoClient = require('mongodb').MongoClient;
-const bodyParser = require('body-parser');
+const { MongoClient } = require('mongodb');
 const app = express();
-const client = new MongoClient('mongodb://localhost:27017'); // Asegúrate de usar tu URL de conexión de MongoDB
+const PORT = process.env.PORT || 3000; // Usa el puerto definido en .env o 3000 como predeterminado
 
-const PORT = 3000;
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware para permitir CORS
-// Permitir solicitudes solo desde 'https://www.natalhoteispires.com.br'
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Permite solicitudes desde cualquier origen
-  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE"); // Métodos permitidos
-  res.header("Access-Control-Allow-Headers", "Content-Type"); // Encabezados permitidos
-  app.use(cors());
-  next(); // Asegura que la solicitud continúe al siguiente middleware o ruta
+// Configuración de CORS para permitir solicitudes desde cualquier origen
+app.use(cors({
+  origin: '*', // Permite solicitudes desde cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type']
+}));
+
+// Ruta principal para servir el frontend
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+// Asegúrate de que la variable MONGO_URL esté cargada correctamente
+if (!process.env.MONGO_URL) {
+  console.error("MONGO_URL no está definida en el archivo .env");
+  process.exit(1); // Finaliza el proceso si no se encuentra la URL de MongoDB
+}
+
+const client = new MongoClient(process.env.MONGO_URL); // URL de MongoDB desde .env
 
 
 // Middleware para parsear JSON
-app.use(bodyParser.json());
+app.use(express.json()); // Usamos el middleware de Express directamente
 
 // Importar rutas desde la carpeta api
 const messagesRoute = require('./api/messages');
@@ -29,20 +43,29 @@ const saveMessageRoute = require('./api/save-message');
 app.use('/api/messages', messagesRoute);
 app.use('/api/save-message', saveMessageRoute);
 
-// Iniciar el servidor
+// Manejo de errores global
+app.use((err, req, res, next) => {
+  console.error('Error no manejado:', err);
+  res.status(500).json({ error: 'Ocurrió un error en el servidor' });
+});
+
+// Iniciar el servidor y conectar a MongoDB
 async function startServer() {
   try {
-    await client.connect();
+    await client.connect(); // Conexión a MongoDB
     console.log('Conectado a MongoDB');
+    
+    // Compartir la base de datos con las rutas
+    const db = client.db('nombre_de_tu_base'); // Reemplaza con el nombre de tu base de datos
+    app.locals.db = db; // Agrega la base de datos a las variables locales de la app
 
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en http://localhost:${PORT}`);
     });
   } catch (err) {
     console.error('Error al conectar a MongoDB', err);
-    process.exit(1);
+    process.exit(1); // Finaliza el proceso si falla la conexión
   }
 }
 
 startServer();
-
