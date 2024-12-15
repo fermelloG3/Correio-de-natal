@@ -282,7 +282,6 @@
             // Enviar los datos al servidor con fetch
             fetch('https://natalhoteispires.com.br/api/save-message',  {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -339,7 +338,7 @@ function filterMessages() {
     window.onload = loadMessages;
 
     function loadMessages() {
-        fetch('https://natalhoteispires.com.br/api/messages', { mode:"no-cors" })
+        fetch('https://natalhoteispires.com.br/api/messages')
             .then(response => response.json())
             .then(messages => {
                 const messageBox = document.getElementById('message-box');
