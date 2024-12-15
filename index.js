@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Configuración de CORS para permitir solicitudes desde cualquier origen
 app.use(cors({
-  origin: '*', // Permite solicitudes desde cualquier origen
+  origin: 'https://www.natalhoteispires.com.br',  // Permite solo solicitudes desde este dominio
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type']
 }));
