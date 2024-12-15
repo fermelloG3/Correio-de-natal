@@ -1,5 +1,16 @@
 const express = require('express');
+const cors = require('cors');  // Importa CORS
 const router = express.Router();
+
+// Configura CORS para permitir solo el dominio de tu frontend
+const corsOptions = {
+  origin: 'https://www.natalhoteispires.com.br', // Permite solicitudes solo desde este dominio
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+};
+
+// Usa CORS con la configuración
+router.use(cors(corsOptions));
 
 router.get('/', async (req, res) => {
   try {
@@ -14,3 +25,4 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
+
