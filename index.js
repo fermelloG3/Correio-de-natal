@@ -9,15 +9,12 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Usa el puerto definido en .env o 3000 como predeterminado
 
 // Configuración de CORS
-const corsOptions = {
-  origin: ['https://correio-de-natal.vercel.app', 'http://localhost:3000'], // Agrega ambos orígenes
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Añadir OPTIONS explícitamente
-  allowedHeaders: ['Content-Type'],
-  credentials: true, // Permite el uso de cookies si es necesario
-};
-
-// Aplica CORS a todas las rutas
-app.use(cors(corsOptions));  // Esto habilita CORS para todas las rutas
+app.use((req, res, next) => {
+  res.append('Access-Control-Allow-Origin', ['*']);
+  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
